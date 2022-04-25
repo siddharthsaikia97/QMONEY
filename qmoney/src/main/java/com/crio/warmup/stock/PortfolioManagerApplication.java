@@ -45,8 +45,14 @@ public class PortfolioManagerApplication {
   //  2. You can use "./gradlew build" to check if your code builds successfully.
 
   public static List<String> mainReadFile(String[] args) throws IOException, URISyntaxException {
+    ObjectMapper om = getObjectMapper();
+    String contents = new String(Files.readAllBytes(resolveFileFromResources(args[0]).toPath()));
+    PortfolioTrade[] trades = om.readValue(contents, PortfolioTrade[].class);
 
-     return Collections.emptyList();
+    List<String> symbols = Stream.of(trades).map(PortfolioTrade::getSymbol).collect(Collectors.toList());
+    return symbols;
+
+     //return Collections.emptyList();
   }
 
 
@@ -117,10 +123,10 @@ public class PortfolioManagerApplication {
   public static List<String> debugOutputs() {
 
      String valueOfArgument0 = "trades.json";
-     String resultOfResolveFilePathArgs0 = "";
-     String toStringOfObjectMapper = "";
-     String functionNameFromTestFileInStackTrace = "";
-     String lineNumberFromTestFileInStackTrace = "";
+     String resultOfResolveFilePathArgs0 = "/home/crio-user/workspace/siddharthsaikia97-ME_QMONEY_V2/qmoney/bin/main/trades.json";
+     String toStringOfObjectMapper = "com.fasterxml.jackson.databind.ObjectMapper@459e9125";
+     String functionNameFromTestFileInStackTrace = "mainReadFile()";
+     String lineNumberFromTestFileInStackTrace = "29";
 
 
     return Arrays.asList(new String[]{valueOfArgument0, resultOfResolveFilePathArgs0,
