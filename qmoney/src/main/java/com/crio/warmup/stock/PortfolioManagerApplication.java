@@ -1,7 +1,6 @@
 
 package com.crio.warmup.stock;
 
-
 import com.crio.warmup.stock.dto.*;
 import com.crio.warmup.stock.log.UncaughtExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,21 +8,21 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
+//import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.Period;
+//import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
+//import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.management.RuntimeErrorException;
+//import javax.management.RuntimeErrorException;
 import org.apache.logging.log4j.ThreadContext;
 import org.springframework.web.client.RestTemplate;
 
@@ -63,18 +62,20 @@ public class PortfolioManagerApplication {
     //String contents = new String(Files.readAllBytes(resolveFileFromResources(args[0]).toPath()));
     //PortfolioTrade[] trades = om.readValue(contents, PortfolioTrade[].class);
     //List<String> symbols =
-        //Stream.of(trades).map(PortfolioTrade::getSymbol).collect(Collectors.toList());
+    //Stream.of(trades).map(PortfolioTrade::getSymbol).collect(Collectors.toList());
     List<PortfolioTrade> trades =
-            Arrays.asList(om.readValue(resolveFileFromResources(args[0]), PortfolioTrade[].class));
+        Arrays.asList(om.readValue(resolveFileFromResources(args[0]), PortfolioTrade[].class));
     List<TotalReturnsDto> totalReturns = mainReadQuotesHelper(args, trades);
     Collections.sort(totalReturns, TotalReturnsDto.closingComparator);
     List<String> stocks = new ArrayList<>();
     for (TotalReturnsDto trd : totalReturns) {
       stocks.add(trd.getSymbol());
-    }    
+    }
 
     return stocks;
   }
+  
+  //public static List<String> sort
   
   public static List<TotalReturnsDto> mainReadQuotesHelper(String[] args, List<PortfolioTrade> trades)
       throws IOException, URISyntaxException {
@@ -192,7 +193,9 @@ public class PortfolioManagerApplication {
       annualizedReturns.add(getAnnualizedReturn(trades[i], endDate));
     }
 
-    return Collections.emptyList();
+    Collections.sort(annualizedReturns, AnnualizedReturn.returnComparator);
+
+    return annualizedReturns;
   }
   
   
@@ -212,10 +215,10 @@ public class PortfolioManagerApplication {
     TiingoCandle[] stocks = restTemplate.getForObject(url, TiingoCandle[].class);
 
     if (stocks != null) {
-      TiingoCandle stocksStartDate = stocks[0];
+      TiingoCandle stocksStart = stocks[0];
       TiingoCandle stocksLatest = stocks[stocks.length - 1];
 
-      Double buyPrice = stocksStartDate.getOpen();
+      Double buyPrice = stocksStart.getOpen();
       Double sellPrice = stocksLatest.getClose();
 
       AnnualizedReturn annualizedReturn =
@@ -248,13 +251,13 @@ public class PortfolioManagerApplication {
     // Period period = Period.between(startDate, endDate);
     // double yearsBetween = period.getYears();
     LocalDate startDate = trade.getPurchaseDate();
-    double yearsBetween = (double) ChronoUnit.DAYS.between(startDate, endDate) / 365;
+    double yearsBetween = (double) ChronoUnit.DAYS.between(startDate, endDate) / 365.24;
     
-    double totalReturn = (sellPrice - buyPrice) / buyPrice;
+    double totalReturns = (sellPrice - buyPrice) / buyPrice;
     
-    double annualizedReturn = Math.pow(1 + totalReturn, 1.0 / yearsBetween) - 1;
+    double annualizedReturn = Math.pow((1 + totalReturns), (1 / yearsBetween)) - 1;
 
-    return new AnnualizedReturn(trade.getSymbol(), annualizedReturn, totalReturn);
+    return new AnnualizedReturn(trade.getSymbol(), annualizedReturn, totalReturns);
   }
 
 

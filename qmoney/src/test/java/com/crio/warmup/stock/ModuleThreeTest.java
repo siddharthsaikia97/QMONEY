@@ -2,6 +2,7 @@
 package com.crio.warmup.stock;
 
 import com.crio.warmup.stock.dto.AnnualizedReturn;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

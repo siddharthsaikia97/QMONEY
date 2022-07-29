@@ -1,6 +1,8 @@
 
 package com.crio.warmup.stock.dto;
 
+import java.util.Comparator;
+
 public class AnnualizedReturn {
 
   private final String symbol;
@@ -24,4 +26,10 @@ public class AnnualizedReturn {
   public Double getTotalReturns() {
     return totalReturns;
   }
+
+  public static final Comparator<AnnualizedReturn> returnComparator = new Comparator<AnnualizedReturn>() {
+    public int compare(AnnualizedReturn r1, AnnualizedReturn r2) {
+      return (int) -1*(r1.getAnnualizedReturn().compareTo(r2.getAnnualizedReturn()));
+    }
+  };
 }
