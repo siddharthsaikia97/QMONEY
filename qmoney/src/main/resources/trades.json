@@ -1,7 +1,7 @@
 [
   {
     "symbol": "AAPL",
-    "quantity": 100,
+    "quantity": 10,
     "tradeType": "BUY",
     "purchaseDate": "2019-01-02"
   },
