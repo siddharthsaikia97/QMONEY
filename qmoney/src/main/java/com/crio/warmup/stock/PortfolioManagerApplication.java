@@ -20,7 +20,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -40,7 +39,7 @@ public class PortfolioManagerApplication {
 
 
 
-  // TODO: CRIO_TASK_MODULE_REST_API
+  //  CRIO_TASK_MODULE_REST_API
   //  Find out the closing price of each stock on the end_date and return the list
   //  of all symbols in ascending order by its close value on end date.
 
@@ -97,7 +96,7 @@ public class PortfolioManagerApplication {
     return mapper;
   }
 
-  // TODO:
+  // 
   //  After refactor, make sure that the tests pass by using these two commands
   //  ./gradlew test --tests PortfolioManagerApplicationTest.readTradesFromJson
   //  ./gradlew test --tests PortfolioManagerApplicationTest.mainReadFile
@@ -143,7 +142,7 @@ public class PortfolioManagerApplication {
             functionNameFromTestFileInStackTrace, lineNumberFromTestFileInStackTrace});
   }
 
-  // TODO:
+  // 
   //  Build the Url using given parameters and use this function in your code to cann the API.
   public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String token) {
     return "https://api.tiingo.com/tiingo/daily/" + trade.getSymbol() + "/prices?startDate="
@@ -155,7 +154,7 @@ public class PortfolioManagerApplication {
     ObjectMapper mapper = new ObjectMapper();
     logger.info(mapper.writeValueAsString(object));
  }
-  // TODO:
+  // 
   //  Ensure all tests are passing using below command
   //  ./gradlew test --tests ModuleThreeRefactorTest
   static Double getOpeningPriceOnStartDate(List<Candle> candles) {
@@ -227,7 +226,7 @@ public class PortfolioManagerApplication {
     
   }
 
-  // TODO: CRIO_TASK_MODULE_CALCULATIONS
+  //  CRIO_TASK_MODULE_CALCULATIONS
   //  Return the populated list of AnnualizedReturn for all stocks.
   //  Annualized returns should be calculated in two steps:
   //   1. Calculate totalReturn = (sell_value - buy_value) / buy_value.
@@ -275,7 +274,7 @@ public class PortfolioManagerApplication {
 
 
 
-  // TODO: CRIO_TASK_MODULE_REFACTOR
+  //  CRIO_TASK_MODULE_REFACTOR
   //  Once you are done with the implementation inside PortfolioManagerImpl and
   //  PortfolioManagerFactory, create PortfolioManager using PortfolioManagerFactory.
   //  Refer to the code from previous modules to get the List<PortfolioTrades> and endDate, and
@@ -285,7 +284,7 @@ public class PortfolioManagerApplication {
   // Remember to confirm that you are getting same results for annualized returns as in Module 3.
 
   public static RestTemplate restTemplate = new RestTemplate();
-  public static PortfolioManager portfolioManager = PortfolioManagerFactory.getPortfolioManager(restTemplate);
+  public static PortfolioManager portfolioManager = PortfolioManagerFactory.getPortfolioManager("alphavantage", restTemplate);
 
   public static List<AnnualizedReturn> mainCalculateReturnsAfterRefactor(String[] args)
       throws Exception {
