@@ -65,7 +65,7 @@ subprojects {
             }
         }
     }
-
+    
     task installGitHooks(type: Copy) {
         from new File(rootProject.rootDir, '__CRIO__/pre-push')
         into { new File(rootProject.rootDir, '.git/hooks') }

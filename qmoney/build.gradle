@@ -15,7 +15,6 @@ configurations {
 
 mainClassName = 'com.crio.warmup.stock.PortfolioManagerApplication'
 
-
 repositories {
     mavenLocal()
     mavenCentral()

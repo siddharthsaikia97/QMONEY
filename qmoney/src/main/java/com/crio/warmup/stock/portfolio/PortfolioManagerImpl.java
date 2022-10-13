@@ -19,7 +19,6 @@ import org.springframework.web.client.RestTemplate;
 public class PortfolioManagerImpl implements PortfolioManager {
 
 
-
   private StockQuotesService stockQuotesService;
   private RestTemplate restTemplate;
 
