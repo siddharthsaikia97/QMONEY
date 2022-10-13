@@ -21,14 +21,23 @@ public class PortfolioManagerFactory {
   //    3. Make sure all of the tests pass by using the gradle command below:
   //       ./gradlew test --tests PortfolioManagerFactory
 
-   static StockQuotesService stockQuotesService; 
+  //  static StockQuotesService stockQuotesService; 
 
-   public static PortfolioManager getPortfolioManager(String provider,
-     RestTemplate restTemplate) {
+  //  public static PortfolioManager getPortfolioManager(String provider,
+  //    RestTemplate restTemplate) {
 
-      stockQuotesService = StockQuoteServiceFactory.INSTANCE.getService(provider, restTemplate);
+  //     stockQuotesService = StockQuoteServiceFactory.INSTANCE.getService(provider, restTemplate);
 
-     return new PortfolioManagerImpl(stockQuotesService);
-   }
+  //    return new PortfolioManagerImpl(stockQuotesService);
+  //  }
+
+
+   public static PortfolioManager getPortfolioManager(RestTemplate restTemplate) {
+    return getPortfolioManager("",restTemplate);
+ }
+
+ public static PortfolioManager getPortfolioManager(String provider, RestTemplate restTemplate) {
+   return new PortfolioManagerImpl(StockQuoteServiceFactory.INSTANCE.getService(provider, restTemplate));    
+ }
 
 }
