@@ -3,6 +3,7 @@ package com.crio.warmup.stock.quotes;
 
 import com.crio.warmup.stock.dto.Candle;
 import com.crio.warmup.stock.dto.TiingoCandle;
+import com.crio.warmup.stock.exception.StockQuoteServiceException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -31,26 +32,33 @@ public class TiingoService implements StockQuotesService {
   // 2. Run the tests using command below and make sure it passes.
   //    ./gradlew test --tests TiingoServiceTest
 
-  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException {
+  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException, StockQuoteServiceException {
 
     //Check whther from is less than to
     if(from.isAfter(to)) {
       throw new RuntimeErrorException(null);
     }
 
-    //Calling API and storing the data
-    /* (alternate way)
-        ResponseEntity<List<TiingoCandle>> candlesHelper = restTemplate.exchange(
-              buildUri(symbol, from, to), HttpMethod.GET, null, 
-              new ParameterizedTypeReference<List<TiingoCandle>>() {});
-        List<TiingoCandle> candles = candlesHelper.getBody();
-     */
-    String response = restTemplate.getForObject(buildUri(symbol, from, to), String.class);
-    ObjectMapper mapper = getObjectMapper();
-    
-    TiingoCandle[] candlesHelper = mapper.readValue(response, TiingoCandle[].class);
-    //TiingoCandle[] candlesHelper = 
-    //  restTemplate.getForObject(buildUri(symbol, from, to), TiingoCandle[].class);
+    TiingoCandle[] candlesHelper;
+
+    try {
+      //Calling API and storing the data
+      /* (alternate way)
+          ResponseEntity<List<TiingoCandle>> candlesHelper = restTemplate.exchange(
+                buildUri(symbol, from, to), HttpMethod.GET, null, 
+                new ParameterizedTypeReference<List<TiingoCandle>>() {});
+          List<TiingoCandle> candles = candlesHelper.getBody();
+      */
+      String response = restTemplate.getForObject(buildUri(symbol, from, to), String.class);
+      ObjectMapper mapper = getObjectMapper();
+      
+      candlesHelper = mapper.readValue(response, TiingoCandle[].class);
+      //TiingoCandle[] candlesHelper = 
+      //  restTemplate.getForObject(buildUri(symbol, from, to), TiingoCandle[].class);
+    }
+    catch(NullPointerException e) {
+      throw new StockQuoteServiceException("Tiingo Service is down", e);
+    }
 
     List<Candle> candles = new ArrayList<>(); 
 

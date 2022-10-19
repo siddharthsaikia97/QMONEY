@@ -5,6 +5,12 @@ import java.net.URISyntaxException;
 import com.crio.warmup.stock.dto.AlphavantageCandle;
 import com.crio.warmup.stock.dto.AlphavantageDailyResponse;
 import com.crio.warmup.stock.dto.Candle;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.SECONDS;
+
+import com.crio.warmup.stock.dto.AlphavantageDailyResponse;
+import com.crio.warmup.stock.dto.Candle;
+import com.crio.warmup.stock.exception.StockQuoteServiceException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -52,29 +58,37 @@ public class AlphavantageService implements StockQuotesService {
     this.restTemplate = restTemplate;
   }
 
-  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException, RestClientException, URISyntaxException {
+  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException, RestClientException, URISyntaxException, StockQuoteServiceException {
     
-    //Getting the api response as a string
-    String response = restTemplate.getForObject(buildUrl(symbol), String.class);
-
-    ObjectMapper mapper = getObjectMapper();
-
-    //Mapping string to a map
-    /*Through AlphavantageCandle we map the inner structure of json and with AlphavantageDailyResponse we map
-      the outer structure */
-    Map<LocalDate, AlphavantageCandle> dailyResponse = mapper.readValue(response, AlphavantageDailyResponse.class).getCandles();
-
     List<Candle> alphaCandles = new ArrayList<>();
+    
+    try {
+      
+      //Getting the api response as a string
+      String response = restTemplate.getForObject(buildUrl(symbol), String.class);
 
-    for(LocalDate date=from; date.compareTo(to)<=1; date=date.plusDays(1)) {
+      ObjectMapper mapper = getObjectMapper();
 
-      AlphavantageCandle candle = dailyResponse.get(date);
+      //Mapping string to a map
+      /*Through AlphavantageCandle we map the inner structure of json and with AlphavantageDailyResponse we map
+        the outer structure */
+      Map<LocalDate, AlphavantageCandle> dailyResponse = mapper.readValue(response, AlphavantageDailyResponse.class).getCandles();
 
-      if(candle!=null) {
-        candle.setDate(date);
-        alphaCandles.add(candle);
+      for(LocalDate date=from; date.compareTo(to)<=1; date=date.plusDays(1)) {
+
+        AlphavantageCandle candle = dailyResponse.get(date);
+
+        if(candle!=null) {
+          candle.setDate(date);
+          alphaCandles.add(candle);
+        }
       }
     }
+    catch (NullPointerException e) {
+      throw new StockQuoteServiceException("Alphavantage api calls exceeded", e);
+    }
+
+    
    
     return alphaCandles;   
 

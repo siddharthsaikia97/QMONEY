@@ -14,6 +14,30 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.springframework.web.client.RestClientException;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.SECONDS;
+
+import com.crio.warmup.stock.dto.AnnualizedReturn;
+import com.crio.warmup.stock.dto.Candle;
+import com.crio.warmup.stock.dto.PortfolioTrade;
+import com.crio.warmup.stock.dto.TiingoCandle;
+import com.crio.warmup.stock.exception.StockQuoteServiceException;
+import com.crio.warmup.stock.quotes.StockQuotesService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.springframework.web.client.RestTemplate;
 
 public class PortfolioManagerImpl implements PortfolioManager {
@@ -48,7 +72,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
   @Override
   public List<AnnualizedReturn> calculateAnnualizedReturn(List<PortfolioTrade> portfolioTrades,
-      LocalDate endDate) throws RestClientException, URISyntaxException {
+      LocalDate endDate) throws RestClientException, URISyntaxException, StockQuoteServiceException {
 
 
     List<AnnualizedReturn> annualizedReturnList = new ArrayList<>();
@@ -72,7 +96,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
   
 
   //Calculating annualized return for each stock
-  public AnnualizedReturn getAnnualizedReturn(PortfolioTrade trade, LocalDate endDate) throws RestClientException, URISyntaxException {
+  public AnnualizedReturn getAnnualizedReturn(PortfolioTrade trade, LocalDate endDate) throws RestClientException, URISyntaxException, StockQuoteServiceException {
     LocalDate startDate = trade.getPurchaseDate();
     String symbol = trade.getSymbol();
 
@@ -118,7 +142,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
 
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
-      throws JsonProcessingException, RestClientException, URISyntaxException {
+      throws JsonProcessingException, RestClientException, URISyntaxException, StockQuoteServiceException {
 
         return stockQuotesService.getStockQuote(symbol, from, to);
   }
