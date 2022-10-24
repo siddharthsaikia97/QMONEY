@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 class PortfolioManagerApplicationTest {
 
 
-  // TODO: WARNING!!!
+  // 
   //  DO NOT MODIFY ANY FILES IN THE TESTS/ ASSESSMENTS UNLESS ASKED TO.
   //  These files are replaced from stock contents while executing the assessments.
   //  Any modifications in this file may result in Assessment failure!

@@ -14,44 +14,24 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.springframework.web.client.RestClientException;
-import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.SECONDS;
-
-import com.crio.warmup.stock.dto.AnnualizedReturn;
-import com.crio.warmup.stock.dto.Candle;
-import com.crio.warmup.stock.dto.PortfolioTrade;
-import com.crio.warmup.stock.dto.TiingoCandle;
 import com.crio.warmup.stock.exception.StockQuoteServiceException;
-import com.crio.warmup.stock.quotes.StockQuotesService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import org.springframework.web.client.RestTemplate;
 
 public class PortfolioManagerImpl implements PortfolioManager {
 
 
   private StockQuotesService stockQuotesService;
-  private RestTemplate restTemplate;
 
   // Caution: Do not delete or modify the constructor, or else your build will break!
   // This is absolutely necessary for backward compatibility
-  @Deprecated
-  protected PortfolioManagerImpl(RestTemplate restTemplate) {
-    this.restTemplate = restTemplate;
-  }
+  // @Deprecated
+  // protected PortfolioManagerImpl(RestTemplate restTemplate) {
+  //   this.restTemplate = restTemplate;
+  // }
 
   protected PortfolioManagerImpl(StockQuotesService stockQuotesService) {
     this.stockQuotesService = stockQuotesService;
@@ -152,6 +132,43 @@ public class PortfolioManagerImpl implements PortfolioManager {
            + "startDate=" + startDate + "&endDate=" + endDate + "&token=65275bf240aea4c348da5b20ef7a38f309c31289";
             
        return uriTemplate;
+  }
+
+  @Override
+  public List<AnnualizedReturn> calculateAnnualizedReturnParallel(
+      List<PortfolioTrade> portfolioTrades, LocalDate endDate, int numThreads)
+      throws InterruptedException, StockQuoteServiceException {
+        
+        List<Future<AnnualizedReturn>> futureReturnList = new ArrayList<>();
+
+        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+
+        for(int i=0; i<portfolioTrades.size(); i++) {
+          PortfolioTrade trade = portfolioTrades.get(i);
+          Callable<AnnualizedReturn> callableTask = () -> {
+            return getAnnualizedReturn(trade, endDate);
+          };
+          Future<AnnualizedReturn> futureReturn = executor.submit(callableTask);
+          futureReturnList.add(futureReturn);
+        }
+
+        List<AnnualizedReturn> annualizedReturns = new ArrayList<>();
+
+        for(int i=0; i<futureReturnList.size(); i++) {
+          Future<AnnualizedReturn> futureReturn = futureReturnList.get(i);
+
+          try {
+            AnnualizedReturn returns = futureReturn.get();
+            annualizedReturns.add(returns);
+          }
+          catch (ExecutionException e) {
+            throw new StockQuoteServiceException("API response error", e);
+          }
+        }
+
+        Collections.sort(annualizedReturns, getComparator());
+
+    return annualizedReturns;
   }
 
 
