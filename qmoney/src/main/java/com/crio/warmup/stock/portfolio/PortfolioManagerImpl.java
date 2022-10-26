@@ -52,7 +52,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
   @Override
   public List<AnnualizedReturn> calculateAnnualizedReturn(List<PortfolioTrade> portfolioTrades,
-      LocalDate endDate) throws RestClientException, URISyntaxException, StockQuoteServiceException {
+      LocalDate endDate) throws StockQuoteServiceException {
 
 
     List<AnnualizedReturn> annualizedReturnList = new ArrayList<>();
@@ -76,7 +76,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
   
 
   //Calculating annualized return for each stock
-  public AnnualizedReturn getAnnualizedReturn(PortfolioTrade trade, LocalDate endDate) throws RestClientException, URISyntaxException, StockQuoteServiceException {
+  public AnnualizedReturn getAnnualizedReturn(PortfolioTrade trade, LocalDate endDate) throws StockQuoteServiceException {
     LocalDate startDate = trade.getPurchaseDate();
     String symbol = trade.getSymbol();
 
@@ -122,7 +122,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
 
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
-      throws JsonProcessingException, RestClientException, URISyntaxException, StockQuoteServiceException{
+      throws JsonProcessingException,StockQuoteServiceException{
 
         return stockQuotesService.getStockQuote(symbol, from, to);
   }
@@ -137,7 +137,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
   @Override
   public List<AnnualizedReturn> calculateAnnualizedReturnParallel(
       List<PortfolioTrade> portfolioTrades, LocalDate endDate, int numThreads)
-      throws InterruptedException, StockQuoteServiceException,URISyntaxException{
+      throws StockQuoteServiceException, InterruptedException{
         
         List<Future<AnnualizedReturn>> futureReturnList = new ArrayList<>();
 

@@ -53,7 +53,7 @@ public class AlphavantageService implements StockQuotesService {
     this.restTemplate = restTemplate;
   }
 
-  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException, RestClientException, URISyntaxException, StockQuoteServiceException {
+  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException,StockQuoteServiceException {
     
     List<Candle> alphaCandles = new ArrayList<>();
     
@@ -95,7 +95,7 @@ public class AlphavantageService implements StockQuotesService {
     return mapper;
   }
 
-  private static String buildUrl(String symbol) throws URISyntaxException {
+  private static String buildUrl(String symbol){
     String url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + symbol +
     "&apikey=" + key + "&outputsize=full";
 

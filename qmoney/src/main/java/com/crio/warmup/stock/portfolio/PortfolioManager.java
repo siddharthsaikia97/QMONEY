@@ -14,14 +14,14 @@ public interface PortfolioManager {
   List<AnnualizedReturn> calculateAnnualizedReturnParallel(
       List<PortfolioTrade> portfolioTrades,
       LocalDate endDate, int numThreads) throws InterruptedException,
-      StockQuoteServiceException,URISyntaxException;
+      StockQuoteServiceException;
 
   //CHECKSTYLE:OFF
 
 
   List<AnnualizedReturn> calculateAnnualizedReturn(List<PortfolioTrade> portfolioTrades,
       LocalDate endDate)
-      throws StockQuoteServiceException, RestClientException, URISyntaxException
+      throws StockQuoteServiceException
   ;
 }
 

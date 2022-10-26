@@ -33,7 +33,7 @@ public class TiingoService implements StockQuotesService {
   // 2. Run the tests using command below and make sure it passes.
   //    ./gradlew test --tests TiingoServiceTest
 
-  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException, StockQuoteServiceException,URISyntaxException{
+  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException, StockQuoteServiceException{
 
     //Check whther from is less than to
     if(from.isAfter(to)) {
