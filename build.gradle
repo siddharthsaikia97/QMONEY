@@ -106,7 +106,7 @@ task verifyMavenJarsCreated {
         if (!jarFile.exists() || !pomFile.exists()) {
             throw new Exception("maven repository directory exists, but files do not exist")
         }
-
+        
         println("All Maven repository files are created and in place")
     }
 }
