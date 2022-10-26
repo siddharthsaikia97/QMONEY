@@ -122,7 +122,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
 
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
-      throws JsonProcessingException, RestClientException, URISyntaxException, StockQuoteServiceException {
+      throws JsonProcessingException, RestClientException, URISyntaxException, StockQuoteServiceException{
 
         return stockQuotesService.getStockQuote(symbol, from, to);
   }
@@ -137,7 +137,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
   @Override
   public List<AnnualizedReturn> calculateAnnualizedReturnParallel(
       List<PortfolioTrade> portfolioTrades, LocalDate endDate, int numThreads)
-      throws InterruptedException, StockQuoteServiceException {
+      throws InterruptedException, StockQuoteServiceException,URISyntaxException{
         
         List<Future<AnnualizedReturn>> futureReturnList = new ArrayList<>();
 
