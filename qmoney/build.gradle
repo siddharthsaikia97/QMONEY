@@ -33,7 +33,6 @@ dependencies {
     implementation group: 'org.apache.logging.log4j', name: 'log4j-jul', version: '2.12.1'
     implementation group: 'org.slf4j', name: 'jul-to-slf4j', version: '1.7.28'
 
-
 	// https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 	// https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter

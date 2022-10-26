@@ -223,7 +223,6 @@ public class PortfolioManagerApplication {
       return new AnnualizedReturn(tickr, Double.NaN, Double.NaN);
     }
 
-    
   }
 
   //  CRIO_TASK_MODULE_CALCULATIONS
